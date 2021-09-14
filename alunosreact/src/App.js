@@ -14,6 +14,8 @@ function App() {
   const [data, setData] = useState([]);
   const [modalIncluir, setModalIncluir] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
+  const [modalExcluir, setModalExcluir] = useState(false);
+  const [updateData, setUpdateData] = useState(true);
   const [alunoSelecionado, setAlunoSelecionado] = useState({
     id: '',
     nome: '',
@@ -24,8 +26,9 @@ function App() {
   const selecionarAluno = (aluno, opcao) => {
     setAlunoSelecionado(aluno);
 
-    (opcao === "Editar") &&
-      abrirFecharModalEditar()
+    (opcao === "Editar")
+      ? abrirFecharModalEditar()
+      : abrirFecharModalExcluir();
   }
 
   const abrirFecharModalIncluir = () => {
@@ -34,6 +37,11 @@ function App() {
 
   const abrirFecharModalEditar = () => {
     setModalEditar(!modalEditar)
+  }
+
+
+  const abrirFecharModalExcluir = () => {
+    setModalExcluir(!modalExcluir)
   }
 
   const handleChange = e => {
@@ -64,7 +72,25 @@ function App() {
       .then(response => {
 
         setData(data.concat(response.data));
+        setUpdateData(true);
         abrirFecharModalIncluir();
+
+      })
+      .catch(error => {
+        console.error(error);
+      })
+  }
+
+  const pedidoDelete = async () => {
+
+    alunoSelecionado.idade = parseInt(alunoSelecionado.idade);
+
+    await axios.delete(baseUrl + "/" + alunoSelecionado.id)
+      .then(response => {
+
+        setData(data.filter(aluno => aluno.id !== response.data));
+        setUpdateData(true);
+        abrirFecharModalExcluir();
 
       })
       .catch(error => {
@@ -90,6 +116,7 @@ function App() {
           }
         });
 
+        setUpdateData(true);
         abrirFecharModalEditar();
       })
       .catch(error => {
@@ -98,8 +125,11 @@ function App() {
   }
 
   useEffect(() => {
-    pedidoGet();
-  })
+    if (updateData) {
+      pedidoGet();
+      setUpdateData(false);
+    }
+  }, [updateData])
 
   return (
     <div className="aluno-container"> <br />
@@ -138,7 +168,7 @@ function App() {
       </table>
 
       <Modal isOpen={modalIncluir}>
-        <ModalHeader>Incluir Alunos</ModalHeader>
+        <ModalHeader>Incluir Aluno</ModalHeader>
         <ModalBody>
           <div className="form-group">
             <label>Nome: </label>
@@ -177,6 +207,17 @@ function App() {
         <ModalFooter>
           <button className='btn btn-primary' onClick={() => pedidoPut()}>Editar</button> {" "}
           <button className='btn btn-danger' onClick={() => abrirFecharModalEditar()}>Cancelar</button>
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={modalExcluir}>
+        <ModalHeader>Excluir Aluno</ModalHeader>
+        <ModalBody>
+          Confirmar a exclusão do aluno(a): {alunoSelecionado && alunoSelecionado.nome} ?
+        </ModalBody>
+        <ModalFooter>
+          <button className='btn btn-danger' onClick={() => pedidoDelete()}>Sim</button> {" "}
+          <button className='btn btn-secondary' onClick={() => abrirFecharModalExcluir()}>Não</button>
         </ModalFooter>
       </Modal>
     </div>
