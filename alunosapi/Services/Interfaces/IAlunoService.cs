@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AlunosApi.Services
+namespace AlunosApi.Services.Interfaces
 {
     public interface IAlunoService
     {

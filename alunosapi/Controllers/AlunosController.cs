@@ -1,5 +1,6 @@
 ﻿using AlunosApi.Models;
 using AlunosApi.Services;
+using AlunosApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -124,9 +125,9 @@ namespace AlunosApi.Controllers
                     return Ok();
                 }
                 else
+                {
                     return NotFound($"Não foi encontrado aluno com o id {id}");
-
-                return BadRequest("Dados inconsistentes");
+                }
             }
             catch
             {

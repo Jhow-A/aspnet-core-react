@@ -1,5 +1,6 @@
 ﻿using AlunosApi.Context;
 using AlunosApi.Models;
+using AlunosApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
