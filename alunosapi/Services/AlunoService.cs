@@ -25,12 +25,12 @@ namespace AlunosApi.Services
                 // AsNoTracking(): há ganho de desempenho por não rastrear as entidades, porém não terá possibilidades de alterações como updates (seria criado um registro novo)
                 return await _context.Alunos.AsNoTracking().ToListAsync();
             }
-            catch
+            catch (Exception ex)
             {
                 throw;
             }
         }
-        
+
         public async Task<Aluno> GetAluno(int id)
         {
             try
@@ -42,7 +42,7 @@ namespace AlunosApi.Services
                 throw;
             }
         }
-        
+
         public async Task<IEnumerable<Aluno>> GetAlunosByNome(string nome)
         {
             try
@@ -56,19 +56,19 @@ namespace AlunosApi.Services
                 throw;
             }
         }
-        
+
         public async Task CreateAluno(Aluno aluno)
         {
             _context.Alunos.Add(aluno);
             await _context.SaveChangesAsync();
         }
-        
+
         public async Task UpdateAluno(Aluno aluno)
         {
             _context.Entry(aluno).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
-        
+
         public async Task DeleteAluno(Aluno aluno)
         {
             _context.Alunos.Remove(aluno);

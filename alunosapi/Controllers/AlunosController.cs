@@ -1,18 +1,19 @@
 ﻿using AlunosApi.Models;
-using AlunosApi.Services;
 using AlunosApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace AlunosApi.Controllers
 {
+    //[Produces("application/xml")]
     [Route("api/[controller]")]
     [ApiController]
-    //[Produces("application/xml")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AlunosController : ControllerBase
     {
         private readonly IAlunoService _context;
@@ -25,6 +26,7 @@ namespace AlunosApi.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         //[SwaggerResponse(StatusCodes.Status400BadRequest,"Deu ruim")]
         public async Task<ActionResult<IAsyncEnumerable<Aluno>>> GetAlunos()
         {
